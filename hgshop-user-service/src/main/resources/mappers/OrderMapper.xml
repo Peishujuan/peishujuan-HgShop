@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.peishujuan.hgshop.dao.OrderDao">
+
+	<resultMap type="OrderDetail" id="orderDetailMapper">
+		<id property="id" column="id"/>
+		<association property="sku" column="skuid" select="findSkuByid"></association>
+	</resultMap>
+	<select id="findSkuByid" resultType="sku">
+		select id,title,price from hg_sku where id=#{value}
+	</select>
+	
+	
+<!-- int addDetail(OrderDetail orderDetail); -->
+	<insert id="addDetail">
+		INSERT INTO ordersdetail(skuid,total,oid,pnum) 
+		values(#{skuid},#{total},#{oid},#{pnum})
+	</insert>
+
+<!-- int add(Order order);-->
+	<insert id="add" useGeneratedKeys="true" keyColumn="oid" keyProperty="oid">
+		INSERT INTO orders(uid,sumtotal,address,create_time)
+		    values(#{uid},#{sumtotal},#{address},now())
+	</insert>
+
+<!-- 删除购物车的数据  在生成订单的时候使用 void deleteByIds(int[] cartIds);-->
+	<delete id="deleteByIds">
+		delete from hg_cart Where id in 
+		 <foreach collection="array" open="(" close=")" separator="," item="id">
+		 	#{id}
+		 </foreach>
+	</delete>
+	
+	<!-- list(int userId); -->
+	<select id="list" resultType="order">
+		select * FROM orders where uid=#{value}
+	</select>
+	
+	<!-- List<OrderDetail> listDetail(int orderId); -->
+	<select id="listDetail" resultMap="orderDetailMapper">
+		select * from  ordersdetail WHERE oid=#{value}
+	</select>
+	
+
+
+
+
+</mapper>

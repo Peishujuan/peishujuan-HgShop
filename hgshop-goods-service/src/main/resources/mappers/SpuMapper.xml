@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peishujuan.hgshop.dao.SpuDao">
+
+	<resultMap type="spu" id="spuMaper">
+		<id column="id" property="id"></id>
+		<result column="goods_name" property="goodsName"/>
+		<result column="is_marketable" property="isMarketable"/>
+		<result column="brand_id" property="brandId"/>
+		<result column="category_id" property="categoryId"/>
+		<result column="small_pic" property="smallPic"/>
+		<association property="brand" column="brand_id" select="com.peishujuan.hgshop.dao.BrandDao.findById"></association>
+		<association property="category" column="category_id" select="com.peishujuan.hgshop.dao.CategoryDao.findById"></association>
+	</resultMap>
+	
+	<!--List<Spu> list(SpuVo vo);-->
+	<select id="list" resultMap="spuMaper">
+		select * from hg_spu order by id desc
+	</select>	
+
+	<!--int add(Spu spu);-->
+	<insert id="add">
+		insert into hg_spu(goods_name,is_marketable,brand_id,caption,category_id,small_pic)
+		values(#{goodsName},#{isMarketable},#{brandId},#{caption},#{categoryId},#{smallPic})
+	</insert>
+	
+	<!--int update(Spu spu);-->
+
+	<!--int delete(Integer id);-->
+
+	<!--int deleteSpuBatch(int[] ids); -->
+	
+	<select id="findById" resultMap="spuMaper">
+		SELECT * from hg_spu  WHERE id=#{value}
+	</select>
+</mapper>

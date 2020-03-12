@@ -1,0 +1,27 @@
+/*================================================================================
+	Item Name: Kode
+	Description: Premium Bootstrap Admin Template
+	Author: Egemen Kapusuz
+	Author URL: http://www.themeforest.net/user/egemem
+================================================================================*/
+
+/* ================================================
+Google Web Fonts
+================================================ */
+/* Montserrat */
+/* === Icons === */
+/* Font Awesome */
+@import url('font-awesome.min.css');
+/* Bootstrap Main Css File (unedited) */
+@import url('bootstrap.css');
+
+/* Theme Style */
+@import url('style.css');
+
+/* Responsive Style */
+@import url('responsive.css');
+
+/* Shortcuts Css Codes */
+@import url('shortcuts.css');
+
+

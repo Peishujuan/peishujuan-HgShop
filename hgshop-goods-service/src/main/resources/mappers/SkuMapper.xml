@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.peishujuan.hgshop.dao.SkuDao">
+
+<resultMap type="Sku" id="skuMapper">
+	<id column="id" property="id"></id>
+	
+	<result column="sell_point" property="sellPoint"/>
+	<result column="stock_count" property="stockCount"/>
+	<result column="create_time" property="createTime"/>
+	<result column="update_time" property="updateTime"/>
+	<result column="cost_price" property="costPrice"/>	
+	<result column="market_price" property="marketPrice"/>
+	<result column="spu_id" property="spuId"/>
+	<result column="cart_thumbnail" property="cartThumbnail"/>
+	<association property="spu" column="spu_id" select="com.peishujuan.hgshop.dao.SpuDao.findById"></association>
+	<collection property="specs" column="detailId" select="findSpecsBySkuid"></collection>
+</resultMap>
+ 
+	
+<!-- List<Sku> list(Sku sku); -->
+	<select id="list" resultMap="skuMapper">
+		SELECT * FROM hg_sku ORDER BY spu_id DESC,id DESC
+	</select>
+
+	
+<!-- 	Sku get(int id); -->
+	<select id="get" resultMap="skuMapper">
+		SELECT *, id as detailId  FROM hg_sku WHERE id=#{value}
+	</select>
+	
+	<select id="findSpecsBySkuid" resultType="SpecOption">
+		select  spec.id as spec_id, 
+		        spec.spec_name as specName ,
+		        specval.id oid, 
+		        specval.option_name as optionName  
+		from hg_sku_spec as sku 
+   		LEFT JOIN hg_spec as spec on spec.id= sku.spec_id 
+   		LEFT JOIN hg_spec_option as specval ON specval.id=  sku.spec_option_id
+ 		where sku.sku_id=#{value}
+	</select>
+	
+	<insert id="addSku" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into hg_sku(spu_id,title,sell_point,price,stock_count,cost_price,market_price) values(#{spuId},#{title},#{sellPoint},#{price},#{stockCount},#{costPrice},#{marketPrice})
+	</insert>
+
+
+<!-- 	
+	// 添加sku
+	addSkuSpec(@Param("skuId") int skuId,@Param("so") SpecOption so);
+	id	-->
+	<insert id="addSkuSpec">
+		INSERT INTO hg_sku_spec(sku_id,spec_id,spec_option_id)
+			values(#{skuId},#{so.specId},#{so.id})
+	</insert>
+<!-- 	//添加对应sku的属性值
+	int addSkuSpec(SpecOption so); -->
+	
+	
+	<!-- List<Sku> listSkuBySpu(int spuId) --><!-- 根据spu 获取所有的sku -->
+	<select id="listSkuBySpu" resultMap="skuMapper">
+		SELECT *, id as detailId FROM hg_sku WHERE spu_id=${value} ORDER BY id DESC
+	</select>
+	
+</mapper>
